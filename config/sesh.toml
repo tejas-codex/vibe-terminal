@@ -1,0 +1,20 @@
+# sesh — smart tmux session manager.  github.com/joshmedeski/sesh
+# Pick/create/jump sessions from an fzf popup (tmux: prefix + T).
+
+[default_session]
+startup_command = "clear"
+
+# Startup "named" sessions you can always jump to instantly.
+[[session]]
+name = "dashboard "
+path = "~"
+startup_command = "~/.config/tmux/dashboard.sh"
+
+[[session]]
+name = "claude "
+path = "~"
+startup_command = "clear; echo 'claude  /  claude -c  to resume'"
+
+[[session]]
+name = "downloads "
+path = "~/Downloads"

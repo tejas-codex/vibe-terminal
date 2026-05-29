@@ -1,0 +1,11 @@
+{
+  "name": "Vibe Dark",
+  "base": "dark",
+  "overrides": {
+    "userMessageBackground": "#2d3f76",
+    "userMessageBackgroundHover": "#35488a",
+    "promptBorder": "#7aa2f7",
+    "selectionBg": "#3b4261",
+    "inverseText": "#ffffff"
+  }
+}

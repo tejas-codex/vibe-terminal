@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vibe Terminal — Ghostty + tmux + Claude Code, in one line</title>
+<meta name="description" content="A beautiful, crash-proof macOS terminal: Ghostty + tmux + Warp-parity zsh, tuned for Claude Code. One command installs everything." />
+<meta property="og:title" content="Vibe Terminal ⚡" />
+<meta property="og:description" content="Ghostty + tmux + Warp-parity zsh, tuned for Claude Code. One-line install." />
+<meta property="og:image" content="https://raw.githubusercontent.com/tejas-codex/vibe-terminal/main/assets/hero.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#16161e; --bg2:#1a1b26; --panel:#1f2335; --line:#2a2e48;
+  --fg:#c0caf5; --mut:#7a86b6; --blue:#7aa2f7; --purple:#bb9af7;
+  --green:#9ece6a; --red:#f7768e; --orange:#e0af68; --cyan:#7dcfff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--fg);
+  line-height:1.6;overflow-x:hidden;
+}
+/* animated aurora background */
+body::before{
+  content:"";position:fixed;inset:-30%;z-index:-1;opacity:.40;filter:blur(90px);
+  background:
+    radial-gradient(40% 40% at 20% 20%,var(--blue),transparent),
+    radial-gradient(40% 40% at 80% 25%,var(--purple),transparent),
+    radial-gradient(45% 45% at 60% 85%,var(--cyan),transparent),
+    radial-gradient(35% 35% at 15% 80%,var(--green),transparent);
+  animation:drift 22s ease-in-out infinite alternate;
+}
+@keyframes drift{from{transform:translate(-4%,-3%) scale(1)}to{transform:translate(4%,3%) scale(1.15)}}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* nav */
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-weight:700}
+nav .brand{font-size:18px}
+nav .brand b{background:linear-gradient(90deg,var(--blue),var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav a{color:var(--mut);text-decoration:none;font-size:14px;margin-left:22px;transition:.2s}
+nav a:hover{color:var(--fg)}
+
+/* hero */
+.hero{text-align:center;padding:70px 0 40px}
+.hero h1{font-size:clamp(44px,9vw,104px);font-weight:900;letter-spacing:-2px;line-height:.95;
+  background:linear-gradient(100deg,var(--red),var(--orange),var(--green),var(--cyan),var(--blue),var(--purple));
+  background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:flow 8s linear infinite}
+@keyframes flow{to{background-position:300% 0}}
+.hero p.sub{font-size:clamp(16px,2.4vw,22px);color:var(--mut);margin:18px auto 0;max-width:620px}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.badge{font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;border:1px solid var(--line);
+  background:rgba(122,162,247,.08);color:var(--blue)}
+
+/* install box */
+.install{margin:38px auto;max-width:760px}
+.cmd{display:flex;align-items:center;gap:14px;background:rgba(31,35,53,.7);backdrop-filter:blur(12px);
+  border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.cmd code{flex:1;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--green);overflow-x:auto;white-space:nowrap}
+.cmd code .p{color:var(--mut)}
+.copy{cursor:pointer;border:none;border-radius:9px;padding:10px 16px;font-weight:700;font-size:13px;
+  background:linear-gradient(90deg,var(--blue),var(--purple));color:#0d0f1a;transition:.2s;white-space:nowrap}
+.copy:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.copy.done{background:var(--green)}
+.install .alt{text-align:center;color:var(--mut);font-size:13px;margin-top:12px}
+.install .alt b{color:var(--cyan)}
+
+/* shot */
+.shot{margin:46px auto;max-width:900px}
+.shot img{width:100%;border-radius:16px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+
+/* features */
+h2.section{text-align:center;font-size:30px;font-weight:800;margin:64px 0 8px}
+h2.section span{background:linear-gradient(90deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-sub{text-align:center;color:var(--mut);margin-bottom:34px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.card{background:rgba(31,35,53,.55);backdrop-filter:blur(10px);border:1px solid var(--line);
+  border-radius:16px;padding:24px;transition:.25s}
+.card:hover{transform:translateY(-4px);border-color:var(--blue);box-shadow:0 16px 44px rgba(122,162,247,.15)}
+.card .ico{font-size:26px;margin-bottom:10px}
+.card h3{font-size:17px;margin-bottom:6px}
+.card p{color:var(--mut);font-size:14px}
+
+/* keys */
+.keys{background:rgba(31,35,53,.55);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;
+  padding:10px 6px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px}
+.krow{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-radius:8px}
+.krow:hover{background:rgba(122,162,247,.06)}
+.krow .k{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--orange)}
+.krow .d{color:var(--mut);font-size:13px;text-align:right}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.step{position:relative;background:rgba(31,35,53,.55);border:1px solid var(--line);border-radius:16px;padding:24px}
+.step .n{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px;color:#0d0f1a;background:var(--blue);
+  width:30px;height:30px;display:grid;place-items:center;border-radius:8px;margin-bottom:12px}
+.step h3{font-size:16px;margin-bottom:6px}
+.step p{color:var(--mut);font-size:14px}
+.step code{font-family:'JetBrains Mono',monospace;color:var(--green);font-size:13px}
+
+footer{text-align:center;color:var(--mut);padding:70px 0 50px;font-size:14px}
+footer a{color:var(--blue);text-decoration:none}
+.cta{display:inline-block;margin:10px 0 30px;padding:14px 28px;border-radius:12px;font-weight:800;
+  background:linear-gradient(90deg,var(--blue),var(--purple));color:#0d0f1a;text-decoration:none;transition:.2s}
+.cta:hover{transform:translateY(-2px);filter:brightness(1.1)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <div class="brand">⚡ <b>Vibe Terminal</b> <span style="color:var(--mut);font-weight:500;font-size:13px">· by Tejas</span></div>
+    <div>
+      <a href="#features">Features</a>
+      <a href="#keys">Keys</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/tejas-codex/vibe-terminal">GitHub ↗</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h1>VIBE TERMINAL</h1>
+    <p class="sub">A beautiful, crash-proof macOS terminal — <b style="color:var(--fg)">Ghostty + tmux + Warp-parity zsh</b>, tuned for Claude Code. One line installs everything.</p>
+    <div class="badges">
+      <span class="badge">Ghostty</span><span class="badge">tmux</span>
+      <span class="badge">Claude Code</span><span class="badge">starship</span>
+      <span class="badge">crash-proof</span><span class="badge">macOS</span>
+    </div>
+
+    <div class="install" id="install">
+      <div class="cmd">
+        <code id="oneliner"><span class="p">$</span> curl -fsSL https://raw.githubusercontent.com/tejas-codex/vibe-terminal/main/bootstrap.sh | bash</code>
+        <button class="copy" id="copyBtn">Copy</button>
+      </div>
+      <p class="alt">Installs Homebrew · the <b>Ghostty app</b> · every tool · all configs — then opens the dashboard.</p>
+      <p class="alt" style="margin-top:6px">New to Ghostty? It's a fast, native, GPU-accelerated terminal — the installer grabs it for you. <a href="https://ghostty.org/" style="color:var(--cyan)">ghostty.org ↗</a></p>
+
+      <div class="cmd" style="margin-top:18px">
+        <code id="aiprompt"><span class="p">🤖</span> Set up the Vibe Terminal from github.com/tejas-codex/vibe-terminal — run its bootstrap.sh installer, then read CLAUDE.md and offer /customize.</code>
+        <button class="copy" id="copyAi">Copy prompt</button>
+      </div>
+      <p class="alt">Don't want to touch the terminal? Paste that into <b>Claude Code, Cursor, or any AI agent</b> — it installs everything for you.</p>
+    </div>
+  </header>
+
+  <div class="shot">
+    <img src="https://raw.githubusercontent.com/tejas-codex/vibe-terminal/main/assets/hero.png" alt="Vibe Terminal preview" loading="lazy"/>
+  </div>
+
+  <h2 class="section" id="features">Why it <span>feels great</span></h2>
+  <p class="section-sub">Everything a vibe coder needs, nothing they don't.</p>
+  <div class="grid">
+    <div class="card"><div class="ico">🚀</div><h3>One-line install</h3><p>Paste one command. Homebrew, Ghostty, every CLI tool, and all configs — done in minutes.</p></div>
+    <div class="card"><div class="ico">🛟</div><h3>Crash-proof</h3><p>tmux keeps your work (and Claude) alive through crashes, restarts, even reboots.</p></div>
+    <div class="card"><div class="ico">🎛️</div><h3>Pilot dashboard</h3><p>⌘T → Claude + lazygit + files + system, auto-laid-out. Land here every time.</p></div>
+    <div class="card"><div class="ico">⌨️</div><h3>Warp-parity shell</h3><p>Inline suggestions, fuzzy history (atuin), smart jump (zoxide), a slick starship prompt.</p></div>
+    <div class="card"><div class="ico">🤖</div><h3>Tuned for Claude Code</h3><p>Highlighted messages, desktop notifications, resume, fixed ⌘V paste, word-jump.</p></div>
+    <div class="card"><div class="ico">🎨</div><h3>Yours in seconds</h3><p>Run <span class="mono" style="color:var(--cyan)">customize.sh</span> or <span class="mono" style="color:var(--cyan)">/customize</span> — theme, transparency, font, dashboard.</p></div>
+  </div>
+
+  <h2 class="section">See it <span>in action</span></h2>
+  <p class="section-sub">⌘T opens your cockpit · customize.sh changes the whole look</p>
+  <div class="shot"><img src="https://raw.githubusercontent.com/tejas-codex/vibe-terminal/main/assets/dashboard.png" loading="lazy" alt="dashboard"/></div>
+  <div class="shot" style="margin-top:22px"><img src="https://raw.githubusercontent.com/tejas-codex/vibe-terminal/main/assets/themes.png" loading="lazy" alt="theme options"/></div>
+
+  <h2 class="section" id="keys">Key <span>bindings</span></h2>
+  <p class="section-sub">Forgot one? Press <span class="mono">Ctrl-b ?</span> for the live cheat sheet.</p>
+  <div class="keys">
+    <div class="krow"><span class="k">⌘T</span><span class="d">open the dashboard</span></div>
+    <div class="krow"><span class="k">⌘D / ⌘⇧D</span><span class="d">split — same folder</span></div>
+    <div class="krow"><span class="k">⌥ ← / →</span><span class="d">jump by word</span></div>
+    <div class="krow"><span class="k">prefix p</span><span class="d">project picker</span></div>
+    <div class="krow"><span class="k">prefix T</span><span class="d">switch sessions</span></div>
+    <div class="krow"><span class="k">prefix g</span><span class="d">lazygit (visual git)</span></div>
+    <div class="krow"><span class="k">prefix e</span><span class="d">yazi file browser</span></div>
+    <div class="krow"><span class="k">prefix b</span><span class="d">CPU monitor</span></div>
+    <div class="krow"><span class="k">save / undo</span><span class="d">git without fear</span></div>
+    <div class="krow"><span class="k">cc / ccr</span><span class="d">claude / resume chat</span></div>
+  </div>
+
+  <h2 class="section">Get started in <span>3 steps</span></h2>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Paste the line</h3><p>Run the install command above in your terminal (Terminal.app is fine).</p></div>
+    <div class="step"><div class="n">2</div><h3>Ghostty opens</h3><p>You land in the dashboard — Claude, git, files, system, all there.</p></div>
+    <div class="step"><div class="n">3</div><h3>Make it yours</h3><p>Run <code>~/dotfiles-vibe/customize.sh</code> to tune theme, transparency &amp; more.</p></div>
+  </div>
+
+  <footer>
+    <a class="cta" href="https://github.com/tejas-codex/vibe-terminal">⭐ Star on GitHub</a>
+    <div>Built with <a href="https://ghostty.org/">Ghostty</a> ·
+    <a href="https://github.com/tmux/tmux">tmux</a> ·
+    <a href="https://www.anthropic.com/claude-code">Claude Code</a> — open source, MIT.<br/>
+    Crafted by <b style="color:var(--green)"><a href="https://github.com/tejas-codex">Tejas</a></b> ·
+    <a href="https://github.com/tejas-codex/vibe-terminal">github.com/tejas-codex/vibe-terminal</a></div>
+  </footer>
+
+</div>
+<script>
+function wire(id,text,label){const b=document.getElementById(id);if(!b)return;
+  b.addEventListener('click',()=>navigator.clipboard.writeText(text).then(()=>{
+    b.textContent='Copied ✓';b.classList.add('done');
+    setTimeout(()=>{b.textContent=label;b.classList.remove('done')},1800)}));}
+wire('copyBtn','curl -fsSL https://raw.githubusercontent.com/tejas-codex/vibe-terminal/main/bootstrap.sh | bash','Copy');
+wire('copyAi','Set up the Vibe Terminal from github.com/tejas-codex/vibe-terminal — run its bootstrap.sh installer, then read CLAUDE.md and offer /customize.','Copy prompt');
+</script>
+</body>
+</html>
