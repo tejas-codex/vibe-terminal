@@ -4,9 +4,9 @@
 #   ┌──────────────────────────┬──────────────┐
 #   │                          │  ◆ sessions  │  ← fzf Claude session picker
 #   │   ◆ CLAUDE  (main, 70%)  ├──────────────┤
-#   │     auto-starts claude   │  ◆ files     │  ← yazi
+#   │     auto-starts claude   │  ◆ context   │  ← git + last session
 #   └──────────────────────────┴──────────────┘
-#   CPU/mem live in the status bar (top right). btop: prefix+b popup.
+#   CPU/mem in status bar. btop: prefix+b. files: e or prefix+e.
 #   Titled pane borders + solid dark = the premium read.
 #   Launch:  dash  |  ⌘N  |  dash ~/Desktop/my-project
 # ──────────────────────────────────────────────────────────────
@@ -37,7 +37,7 @@ fi
 have() { command -v "$1" >/dev/null 2>&1; }
 
 SESSIONS="$HOME/.config/tmux/claude-sessions.sh"
-FILES=$(have yazi && echo "yazi \"$DIR\"" || echo "exec \$SHELL")
+CONTEXT="$HOME/.config/tmux/context.sh"
 AI=$(have claude && echo claude || echo "exec \$SHELL")
 
 tmux new-session -d -s "$S" -n vibe -c "$DIR"
@@ -57,10 +57,10 @@ RCOL=$(tmux split-window -h -l 30% -t "$MAIN" -c "$DIR" -P -F '#{pane_id}')
 tmux select-pane -t "$RCOL" -T "sessions"
 tmux send-keys -t "$RCOL" "clear; $SESSIONS" C-m
 
-# sessions → files split within right column
+# sessions → context split within right column
 FCOL=$(tmux split-window -v -l 55% -t "$RCOL" -c "$DIR" -P -F '#{pane_id}')
-tmux select-pane -t "$FCOL" -T "files"
-tmux send-keys -t "$FCOL" "$FILES" C-m
+tmux select-pane -t "$FCOL" -T "context"
+tmux send-keys -t "$FCOL" "$CONTEXT \"$DIR\"" C-m
 
 # main pane = Claude
 tmux select-pane -t "$MAIN"
