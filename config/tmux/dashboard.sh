@@ -5,9 +5,8 @@
 #   │                          │  ◆ sessions  │  ← fzf Claude session picker
 #   │   ◆ CLAUDE  (main, 70%)  ├──────────────┤
 #   │     auto-starts claude   │  ◆ files     │  ← yazi
-#   ├──────────────────────────┴──────────────┤
-#   │         ◆ system  (btop, full width)    │  ← full width → no "too small"
-#   └─────────────────────────────────────────┘
+#   └──────────────────────────┴──────────────┘
+#   CPU/mem live in the status bar (top right). btop: prefix+b popup.
 #   Titled pane borders + solid dark = the premium read.
 #   Launch:  dash  |  ⌘N  |  dash ~/Desktop/my-project
 # ──────────────────────────────────────────────────────────────
@@ -39,7 +38,6 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 SESSIONS="$HOME/.config/tmux/claude-sessions.sh"
 FILES=$(have yazi && echo "yazi \"$DIR\"" || echo "exec \$SHELL")
-SYS=$(have btop && echo "btop" || echo "$HOME/.config/tmux/banner.sh; exec \$SHELL")
 AI=$(have claude && echo claude || echo "exec \$SHELL")
 
 tmux new-session -d -s "$S" -n vibe -c "$DIR"
@@ -63,13 +61,6 @@ tmux send-keys -t "$RCOL" "clear; $SESSIONS" C-m
 FCOL=$(tmux split-window -v -l 55% -t "$RCOL" -c "$DIR" -P -F '#{pane_id}')
 tmux select-pane -t "$FCOL" -T "files"
 tmux send-keys -t "$FCOL" "$FILES" C-m
-
-# ── full-width bottom strip: -f spans the entire window width ──
-# Must come LAST. -f flag (tmux 3.1+) creates a window-spanning pane,
-# so it correctly sits below BOTH columns instead of doubling the right column.
-BOT=$(tmux split-window -v -f -l 28% -t "$MAIN" -c "$DIR" -P -F '#{pane_id}')
-tmux select-pane -t "$BOT" -T "system"
-tmux send-keys -t "$BOT" "$SYS" C-m
 
 # main pane = Claude
 tmux select-pane -t "$MAIN"
