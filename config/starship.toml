@@ -1,77 +1,86 @@
-# Starship — TokyoNight, fast, git-aware.  Docs: starship.rs/config
+# Starship — Zer0-Dark-65 palette. Premium, minimal, fast.
 add_newline = true
 command_timeout = 800
 
 format = """
-[](fg:#7aa2f7)\
+[](fg:#56b6c2)\
 $os\
 $directory\
-[](fg:#3b4261 bg:#7aa2f7)\
+[](fg:#2e2d4a bg:#56b6c2)\
 $git_branch$git_status\
-[](fg:#3b4261)\
-$nodejs$python$rust$golang$package\
+[](fg:#2e2d4a)\
+$nodejs$python$rust$golang\
 $fill\
 $cmd_duration\
 $line_break\
 $character"""
 
-palette = "tokyonight"
+palette = "zer0dark"
 
-[palettes.tokyonight]
-bg     = "#1a1b26"
-fg     = "#c0caf5"
-blue   = "#7aa2f7"
-cyan   = "#7dcfff"
-green  = "#9ece6a"
-purple = "#bb9af7"
-red    = "#f7768e"
-orange = "#ff9e64"
-grey   = "#565f89"
-panel  = "#3b4261"
+[palettes.zer0dark]
+bg     = "#1b1a2e"
+fg     = "#c2c2dc"
+cyan   = "#56b6c2"
+orange = "#e0a44a"
+blue   = "#61afef"
+green  = "#98c379"
+purple = "#c678dd"
+red    = "#e06c75"
+panel  = "#2e2d4a"
 
 [os]
 disabled = false
-style = "bg:#7aa2f7 fg:#16161e"
+style = "bg:#56b6c2 fg:#1b1a2e bold"
 format = "[ $symbol ]($style)"
 [os.symbols]
 Macos = ""
 
 [directory]
-style = "bg:#7aa2f7 fg:#16161e bold"
+style = "bg:#56b6c2 fg:#1b1a2e bold"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
-read_only = " "
+read_only = " 󰌾"
 [directory.substitutions]
 "Documents" = "󰈙"
 "Downloads" = ""
 "Desktop"   = ""
+"~"         = "~"
 
 [git_branch]
-style = "bg:#3b4261 fg:#7dcfff"
-symbol = ""
-format = "[ $symbol $branch ]($style)"
+style = "bg:#2e2d4a fg:#56b6c2"
+symbol = " "
+format = "[ $symbol$branch ]($style)"
 
 [git_status]
-style = "bg:#3b4261 fg:#ff9e64"
+style = "bg:#2e2d4a fg:#e0a44a"
 format = "[$all_status$ahead_behind ]($style)"
+conflicted = "󰩌 "
+ahead      = "⇡${count} "
+behind     = "⇣${count} "
+diverged   = "⇕ "
+untracked  = "? "
+stashed    = " "
+modified   = "! "
+staged     = "+ "
+deleted    = "✘ "
 
 [nodejs]
 style = "fg:green"
-symbol = " "
-format = "[ $symbol($version) ]($style)"
+symbol = "󰎙 "
+format = "[ $symbol$version ]($style)"
 [python]
 style = "fg:cyan"
 symbol = " "
-format = "[ $symbol($version) ]($style)"
+format = "[ $symbol$version ]($style)"
 [rust]
 style = "fg:red"
 symbol = " "
-format = "[ $symbol($version) ]($style)"
+format = "[ $symbol$version ]($style)"
 [golang]
 style = "fg:cyan"
 symbol = " "
-format = "[ $symbol($version) ]($style)"
+format = "[ $symbol$version ]($style)"
 [package]
 disabled = true
 
@@ -79,11 +88,11 @@ disabled = true
 symbol = " "
 
 [cmd_duration]
-min_time = 500
-style = "fg:grey"
-format = "[ 󱎫 $duration ]($style)"
+style = "fg:orange"
+format = "[ 󱦟 $duration ]($style)"
+min_time = 2000
 
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
-vimcmd_symbol = "[❮](bold purple)"
+success_symbol = "[❯](bold cyan)"
+error_symbol   = "[❯](bold red)"
+vimcmd_symbol  = "[❮](bold purple)"
