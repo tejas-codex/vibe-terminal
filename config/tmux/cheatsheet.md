@@ -24,9 +24,16 @@
   prefix u          jump to your previous input (then n = keep going up)
 
 ## Dashboard
-  dash              vibe cockpit: Claude + lazygit + files + fastfetch
-  prefix D          launch / jump to the dashboard
+  dash              work cockpit: Claude + lazygit + files + live system
+  prefix D          launch / jump to the work cockpit
+  flex              showcase rice: fastfetch · stocks · calendar · btop · feeds · yazi
+  prefix F          launch / jump to the flex dashboard
   prefix b          CPU monitor toggle (popup; p=cycle view, q=close)
+
+## Look & feel
+  theme             flip dark ↔ light (premium navy ↔ white coder), live
+  prefix i          same toggle, from inside tmux
+  ⌘⇧,               reload Ghostty after editing its config (REQUIRED to apply)
 
 ## See & switch work
   prefix T          session picker (all your open work)
@@ -50,8 +57,14 @@
   prefix M          matrix rain (break)
 
 ## Save / recover
-  Your work survives crashes automatically (tmux).
-  After a reboot: open terminal → it restores. Then `ccr` to resume Claude.
+  Your work survives crashes automatically (tmux, auto-saves every 2 min).
+  After a reboot: open terminal → it restores + you get a "session restored"
+  ping. Then `ccr` in any Claude pane to resume that chat.
+  prefix C-s        save session state now      prefix C-r   restore last save
+
+## Paste
+  ⌘V                paste — text AND screenshots into Claude Code
+  ⌘⇧V               plain text paste (shells / vim)
 
 ## This menu
   prefix ?          show this cheat sheet

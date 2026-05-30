@@ -1,2 +1,5 @@
 *.bak-*
 .DS_Store
+# runtime session-tracking artifacts — never publish (may hold convo context)
+.claude/bridge/
+.claude/session-handoffs/

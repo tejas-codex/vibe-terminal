@@ -45,7 +45,9 @@ alias grep='rg'
 alias cd='z'
 alias lg='lazygit'
 alias lzd='lazydocker'
-alias dash='~/.config/tmux/dashboard.sh'
+alias dash='~/.config/tmux/dashboard.sh'   # premium WORK cockpit (Claude-first)
+alias flex='~/.config/tmux/flex.sh'        # SHOWCASE rice (ticker/btop/feeds/yazi)
+alias theme='~/.config/ghostty/toggle-appearance.sh'  # flip dark ↔ light, live
 alias cc='claude'
 alias ccr='claude -c'                 # resume last Claude session in this dir
 # Scrollable/searchable Claude: keeps the whole chat in real terminal scrollback
@@ -98,10 +100,12 @@ undo() {
 # ask → one-off question to Claude, prints answer, no session. e.g. ask how do I rename a git branch
 ask() { claude -p "$*"; }
 
-# ── Ghostty → always land on the DASHBOARD (persistent + crash-safe) ──
-# Only inside Ghostty, only when not already in tmux, only interactive.
-# First open builds the cockpit (Claude+git+files+fastfetch); later opens,
-# restarts, and crashes reattach the SAME live session — nothing lost.
+# ── Ghostty NEW WINDOW → premium dashboard cockpit ──────────────
+# A fresh Ghostty window (⌘N or app launch) has no $TMUX yet → it lands
+# straight in the dashboard, scoped to the current folder.
+# New TAB (⌘⇧T) is routed through tmux (prefix+c) so it already has $TMUX
+# set → this guard is skipped → you get a plain shell tab "as usual".
+# Crash recovery unchanged (tmux daemon survives; continuum restores).
 if [[ "$TERM_PROGRAM" == "ghostty" && -z "$TMUX" && $- == *i* ]]; then
-  ~/.config/tmux/dashboard.sh
+  exec ~/.config/tmux/dashboard.sh "$PWD"
 fi

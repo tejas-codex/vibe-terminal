@@ -1,0 +1,15 @@
+# ticker — stock watchlist for the flex dashboard
+# Edit this list freely. Launch standalone: ticker --config ~/.config/ticker/ticker.yaml
+show-summary: true
+show-tags: true
+show-fundamentals: true
+show-separator: true
+interval: 5
+watchlist:
+  - NVDA
+  - AAPL
+  - MSFT
+  - GOOG
+  - META
+  - AMZN
+  - TSLA

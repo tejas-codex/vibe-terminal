@@ -1,0 +1,35 @@
+# newsboat — premium dark (TokyoNight Night palette) for the flex dashboard
+auto-reload yes
+reload-time 30
+reload-threads 4
+download-full-page no
+show-read-feeds yes
+feed-sort-order unreadarticlecount-asc
+text-width 0
+scrolloff 3
+
+# keys — vim-ish
+bind-key j down
+bind-key k up
+bind-key G end
+bind-key g home
+bind-key l open
+bind-key h quit
+
+# ── colors: TokyoNight Night ──────────────────────────────────
+color background          color255 default
+color listnormal          color250 default
+color listnormal_unread   color111 default       # blue, unread pop
+color listfocus           color235 color111 bold
+color listfocus_unread    color235 color111 bold
+color info                color236 color150 bold  # green statusline
+color article             color250 default
+color hint-key            color215 default        # orange accents
+color hint-keys-delimiter color240 default
+color hint-separator      color240 default
+color hint-description    color250 default
+
+# ── format: tighter, prettier rows ────────────────────────────
+articlelist-format "%4i %f %D  %?T?|%-17T|  ?%t"
+feedlist-format    "%4i %n %11u  %t"
+datetime-format    "%b %d"
