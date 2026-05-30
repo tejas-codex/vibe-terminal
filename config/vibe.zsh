@@ -101,12 +101,11 @@ undo() {
 # ask → one-off question to Claude, prints answer, no session. e.g. ask how do I rename a git branch
 ask() { claude -p "$*"; }
 
-# ── Ghostty NEW WINDOW → premium dashboard cockpit ──────────────
-# A fresh Ghostty window (⌘N or app launch) has no $TMUX yet → it lands
-# straight in the dashboard, scoped to the current folder.
-# New TAB (⌘⇧T) is routed through tmux (prefix+c) so it already has $TMUX
-# set → this guard is skipped → you get a plain shell tab "as usual".
-# Crash recovery unchanged (tmux daemon survives; continuum restores).
-if [[ "$TERM_PROGRAM" == "ghostty" && -z "$TMUX" && $- == *i* ]]; then
+# ── New terminal window → premium dashboard cockpit ──────────────
+# Works in Ghostty AND Warp. Any fresh window (no $TMUX yet) lands in
+# the dashboard, scoped to current folder. Crash recovery: tmux daemon
+# survives app crashes; continuum auto-saves + restores all sessions.
+if [[ -z "$TMUX" && $- == *i* ]] && \
+   [[ "$TERM_PROGRAM" == "ghostty" || "$TERM_PROGRAM" == "WarpTerminal" ]]; then
   exec ~/.config/tmux/dashboard.sh "$PWD"
 fi
