@@ -2,7 +2,7 @@
 # ──────────────────────────────────────────────────────────────
 #  dash — premium WORK cockpit. Claude-first, scoped to a folder.
 #   ┌──────────────────────────┬──────────────┐
-#   │                          │   git        │  ← lazygit (repo) / hint
+#   │                          │   sessions   │  ← fzf Claude session picker
 #   │   ◆ CLAUDE  (main, 68%)   ├──────────────┤
 #   │     auto-starts claude    │   files      │  ← yazi
 #   │                          ├──────────────┤
@@ -15,21 +15,32 @@ set -u
 DIR="${1:-$PWD}"
 [ -d "$DIR" ] || DIR="$HOME"
 NAME=$(basename "$DIR" | tr ' .' '__')
-S="${2:-dash_$NAME}"          # one cockpit per folder → real folder scoping
 
-# Already open for this folder? jump to it, don't rebuild.
-if tmux has-session -t "$S" 2>/dev/null; then
-  if [ -n "${TMUX:-}" ]; then exec tmux switch-client -t "$S"; else exec tmux attach -t "$S"; fi
+# Session naming:
+#  - Called FROM inside tmux (e.g. `dash` alias) → reuse/jump to existing session.
+#  - Called by new Ghostty window (zshrc guard, no $TMUX) → always create a NEW
+#    independent session so two windows never mirror each other.
+if [ -n "${TMUX:-}" ]; then
+  # Inside tmux: jump to existing session for this folder, or create one.
+  S="${2:-dash_$NAME}"
+  if tmux has-session -t "$S" 2>/dev/null; then
+    exec tmux switch-client -t "$S"
+  fi
+else
+  # New Ghostty window: unique session name so each window is independent.
+  BASE="dash_$NAME"
+  S="$BASE"
+  n=1
+  while tmux has-session -t "$S" 2>/dev/null; do
+    n=$((n + 1))
+    S="${BASE}_${n}"
+  done
 fi
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
-# Git pane is git-aware: lazygit ONLY in a real repo (no ugly error).
-if git -C "$DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 && have lazygit; then
-  GIT="lazygit"
-else
-  GIT="clear; printf '\n   \033[38;5;111mnot a git project yet\033[0m\n   run  \033[38;5;150mgit init\033[0m  to track it, or  \033[38;5;215mp\033[0m  to pick another folder\n\n'; exec \$SHELL"
-fi
+# Sessions pane: interactive claude session picker (fzf), auto-resumes on select.
+SESSIONS="$HOME/.config/tmux/claude-sessions.sh"
 FILES=$(have yazi && echo "yazi \"$DIR\"" || echo "exec \$SHELL")
 # live system pulse — btop (CPU/mem) reads far more premium than a static banner.
 SYS=$(have btop && echo "btop" || echo "$HOME/.config/tmux/banner.sh; exec \$SHELL")
@@ -47,10 +58,10 @@ tmux set-option -t "$S" pane-active-border-style "fg=#61afef"
 MAIN=$(tmux display -p -t "$S:vibe" '#{pane_id}')
 tmux select-pane -t "$MAIN" -T "claude"
 
-# right column (32% wide): git on top
+# right column (32% wide): sessions on top
 RCOL=$(tmux split-window -h -l 32% -t "$MAIN" -c "$DIR" -P -F '#{pane_id}')
-tmux select-pane -t "$RCOL" -T "git"
-tmux send-keys -t "$RCOL" "$GIT" C-m
+tmux select-pane -t "$RCOL" -T "sessions"
+tmux send-keys -t "$RCOL" "clear; $SESSIONS" C-m
 # files in the middle
 FCOL=$(tmux split-window -v -l 64% -t "$RCOL" -c "$DIR" -P -F '#{pane_id}')
 tmux select-pane -t "$FCOL" -T "files"

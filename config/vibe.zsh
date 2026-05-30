@@ -50,6 +50,7 @@ alias flex='~/.config/tmux/flex.sh'        # SHOWCASE rice (ticker/btop/feeds/ya
 alias theme='~/.config/ghostty/toggle-appearance.sh'  # flip dark ↔ light, live
 alias cc='claude'
 alias ccr='claude -c'                 # resume last Claude session in this dir
+alias cs='~/.config/tmux/claude-sessions.sh'  # fzf picker: browse+resume any session
 # Scrollable/searchable Claude: keeps the whole chat in real terminal scrollback
 # so tmux copy-mode (prefix u) + Ghostty ⌘F can find your past inputs.
 alias ccs='CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1 claude'
