@@ -54,19 +54,22 @@ tmux set-option -t "$S" pane-active-border-style "fg=#56b6c2"
 MAIN=$(tmux display -p -t "$S:vibe" '#{pane_id}')
 tmux select-pane -t "$MAIN" -T "claude"
 
-# ── full-width bottom strip for btop (fixes "Width=23" on narrow windows) ──
-BOT=$(tmux split-window -v -l 28% -t "$MAIN" -c "$DIR" -P -F '#{pane_id}')
-tmux select-pane -t "$BOT" -T "system"
-tmux send-keys -t "$BOT" "$SYS" C-m
-
-# ── right column (30% wide) in the top section ──
+# ── right column first (30% wide) — both columns will be full height initially ──
 RCOL=$(tmux split-window -h -l 30% -t "$MAIN" -c "$DIR" -P -F '#{pane_id}')
 tmux select-pane -t "$RCOL" -T "sessions"
 tmux send-keys -t "$RCOL" "clear; $SESSIONS" C-m
 
+# sessions → files split within right column
 FCOL=$(tmux split-window -v -l 55% -t "$RCOL" -c "$DIR" -P -F '#{pane_id}')
 tmux select-pane -t "$FCOL" -T "files"
 tmux send-keys -t "$FCOL" "$FILES" C-m
+
+# ── full-width bottom strip: -f spans the entire window width ──
+# Must come LAST. -f flag (tmux 3.1+) creates a window-spanning pane,
+# so it correctly sits below BOTH columns instead of doubling the right column.
+BOT=$(tmux split-window -v -f -l 28% -t "$MAIN" -c "$DIR" -P -F '#{pane_id}')
+tmux select-pane -t "$BOT" -T "system"
+tmux send-keys -t "$BOT" "$SYS" C-m
 
 # main pane = Claude
 tmux select-pane -t "$MAIN"
