@@ -1,0 +1,24 @@
+name: Zer0-Dark-65
+details: darker
+accent: "#56b6c2"
+background: "#13121f"
+foreground: "#c2c2dc"
+terminal_colors:
+  normal:
+    black:   "#1b1a2e"
+    red:     "#e06c75"
+    green:   "#98c379"
+    yellow:  "#e0a44a"
+    blue:    "#61afef"
+    magenta: "#c678dd"
+    cyan:    "#56b6c2"
+    white:   "#c2c2dc"
+  bright:
+    black:   "#4b5066"
+    red:     "#e06c75"
+    green:   "#98c379"
+    yellow:  "#e5c07b"
+    blue:    "#61afef"
+    magenta: "#c678dd"
+    cyan:    "#56b6c2"
+    white:   "#ffffff"

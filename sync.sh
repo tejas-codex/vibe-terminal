@@ -2,7 +2,7 @@
 # Pull your CURRENT live configs back into this repo (run before git commit).
 set -e
 DIR="$(cd "$(dirname "$0")" && pwd)"; C="$DIR/config"
-mkdir -p "$C/tmux" "$C/claude/hooks" "$C/ghostty" "$C/ghostty/themes" "$C/ticker" "$C/newsboat" "$C/btop/themes" "$C/fastfetch"
+mkdir -p "$C/tmux" "$C/claude/hooks" "$C/ghostty" "$C/ghostty/themes" "$C/ticker" "$C/newsboat" "$C/btop/themes" "$C/fastfetch" "$C/warp/themes"
 cp ~/.config/ghostty/config        "$C/ghostty.config"
 cp ~/.config/ghostty/toggle-appearance.sh "$C/ghostty/toggle-appearance.sh"
 cp ~/.config/ghostty/themes/*      "$C/ghostty/themes/" 2>/dev/null || true
@@ -16,6 +16,7 @@ cp ~/.config/tmux/*.sh ~/.config/tmux/*.md "$C/tmux/"
 cp ~/.config/ticker/ticker.yaml    "$C/ticker/ticker.yaml"
 cp ~/.newsboat/config              "$C/newsboat/config"
 cp ~/.newsboat/urls                "$C/newsboat/urls"
+cp ~/.warp/themes/*.yaml            "$C/warp/themes/" 2>/dev/null || true
 cp ~/.claude/themes/vibe-dark.json "$C/claude/vibe-dark.json"
 cp ~/.claude/hooks/notify-done.sh ~/.claude/hooks/focus-session.sh "$C/claude/hooks/"
 if [ -f ~/.config/vibe.zsh ]; then cp ~/.config/vibe.zsh "$C/vibe.zsh"

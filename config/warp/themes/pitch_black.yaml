@@ -1,0 +1,24 @@
+name: Pitch Black
+details: darker
+accent: "#4CAF50"
+background: "#000000"
+foreground: "#e0e0e0"
+terminal_colors:
+  normal:
+    black:   "#000000"
+    red:     "#f44747"
+    green:   "#6a9955"
+    yellow:  "#dcdcaa"
+    blue:    "#569cd6"
+    magenta: "#c586c0"
+    cyan:    "#4ec9b0"
+    white:   "#d4d4d4"
+  bright:
+    black:   "#666666"
+    red:     "#f44747"
+    green:   "#6a9955"
+    yellow:  "#dcdcaa"
+    blue:    "#569cd6"
+    magenta: "#c586c0"
+    cyan:    "#4ec9b0"
+    white:   "#e0e0e0"
